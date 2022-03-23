@@ -49,7 +49,6 @@ class MainWindow(QTabWidget):
                                      device=self.device)  # todo 指明模型加载的位置的设备
 
 #############################################################
-        # Form.setObjectName("Form")
         self.resize(1363, 708)
         self.horizontalLayoutWidget = QWidget(self)
         self.horizontalLayoutWidget.setGeometry(QRect(970, 630, 371, 31))
