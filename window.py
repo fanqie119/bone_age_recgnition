@@ -5,7 +5,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import threading
-
+import functools
+import math
 import os
 import sys
 from pathlib import Path
@@ -33,9 +34,9 @@ class MainWindow(QTabWidget):
     def __init__(self):
         # 初始化界面
         super().__init__()
-        self.setWindowTitle('Target detection system')
+        self.setWindowTitle('骨龄评估系统')
         self.resize(1200, 800)
-        self.setWindowIcon(QIcon("images/UI/lufei.png"))
+        self.setWindowIcon(QIcon("images/UI/tubiao.jpg"))
         # 图片读取进程
         self.output_size = 480
         self.img2predict = ""
@@ -269,9 +270,9 @@ class MainWindow(QTabWidget):
         self.text_mother_height = QLineEdit(self.gridLayoutWidget_3)
         self.text_mother_height.setObjectName("text_mother_height")
         self.gridLayout_3.addWidget(self.text_mother_height, 3, 4, 1, 1)
-        self.txt5 = QLineEdit(self.gridLayoutWidget_3)
-        self.txt5.setObjectName("txt5")
-        self.gridLayout_3.addWidget(self.txt5, 4, 2, 1, 1)
+        self.text_predict_height = QLineEdit(self.gridLayoutWidget_3)
+        self.text_predict_height.setObjectName("text_predict_height")
+        self.gridLayout_3.addWidget(self.text_predict_height, 4, 2, 1, 1)
         self.button_predict_height = QPushButton(self.gridLayoutWidget_3)
         self.button_predict_height.setObjectName("button_predict_height")
         self.gridLayout_3.addWidget(self.button_predict_height, 4, 0, 1, 1)
@@ -285,40 +286,40 @@ class MainWindow(QTabWidget):
                                           "QPushButton{border:2px}"
                                           "QPushButton{border-radius:5px}"
                                           "QPushButton{padding:5px 5px}")
-        self.label13.setText(_translate("Form", "TextLabel"))
+        # self.label13.setText(_translate("Form", "TextLabel"))
         self.label_level.setText(_translate("Form", "等级"))
-        self.label_radius.setText(_translate("Form", "桡骨"))
-        self.label_atlas.setText(_translate("Form", "图谱"))
-        self.label_first_yuanzhi.setText(_translate("Form", "第一远节指骨"))
-        self.label_third_zhongzhi.setText(_translate("Form", "第三中节指骨"))
-        self.label_fifth_yuanzhi.setText(_translate("Form", "第五远节指骨"))
-        self.label_ulna.setText(_translate("Form", "尺骨"))
-        self.label3.setText(_translate("Form", "TextLabel"))
-        self.label9.setText(_translate("Form", "TextLabel"))
-        self.label7.setText(_translate("Form", "TextLabel"))
-        self.label12.setText(_translate("Form", "TextLabel"))
-        self.label_first_jinzhi.setText(_translate("Form", "第一近节指骨"))
-        self.label11.setText(_translate("Form", "TextLabel"))
-        self.label8.setText(_translate("Form", "TextLabel"))
-        self.label4.setText(_translate("Form", "TextLabel"))
-        self.label1.setText(_translate("Form", "TextLabel"))
-        self.label_first_zhang.setText(_translate("Form", "第一掌骨"))
-        self.label_5.setText(_translate("Form", "第五掌骨"))
-        self.label6.setText(_translate("Form", "TextLabel"))
-        self.label_fifth_jinzhi.setText(_translate("Form", "第五近节指骨"))
-        self.label_fifth_zhongzhi.setText(_translate("Form", "第五中节指骨"))
-        self.label_third_jinzhi.setText(_translate("Form", "第三近节指骨"))
-        self.label_third_yuanzhi.setText(_translate("Form", "第三远节指骨"))
-        self.label5.setText(_translate("Form", "TextLabel"))
-        self.label10.setText(_translate("Form", "TextLabel"))
-        self.label_third_zhang.setText(_translate("Form", "第三掌骨"))
-        self.label2.setText(_translate("Form", "TextLabel"))
+        self.label_radius.setText(_translate("Form", "02桡骨"))
+        # self.label_atlas.setText(_translate("Form", "图谱"))
+        self.label_first_yuanzhi.setText(_translate("Form", "07第一远节指骨"))
+        self.label_third_zhongzhi.setText(_translate("Form", "09第三中节指骨"))
+        self.label_fifth_yuanzhi.setText(_translate("Form", "13第五远节指骨"))
+        self.label_ulna.setText(_translate("Form", "01尺骨"))
+        # self.label3.setText(_translate("Form", "TextLabel"))
+        # self.label9.setText(_translate("Form", "TextLabel"))
+        # self.label7.setText(_translate("Form", "TextLabel"))
+        # self.label12.setText(_translate("Form", "TextLabel"))
+        self.label_first_jinzhi.setText(_translate("Form", "06第一近节指骨"))
+        # self.label11.setText(_translate("Form", "TextLabel"))
+        # self.label8.setText(_translate("Form", "TextLabel"))
+        # self.label4.setText(_translate("Form", "TextLabel"))
+        # self.label1.setText(_translate("Form", "TextLabel"))
+        self.label_first_zhang.setText(_translate("Form", "03第一掌骨"))
+        self.label_5.setText(_translate("Form", "05第五掌骨"))
+        # self.label6.setText(_translate("Form", "TextLabel"))
+        self.label_fifth_jinzhi.setText(_translate("Form", "11第五近节指骨"))
+        self.label_fifth_zhongzhi.setText(_translate("Form", "12第五中节指骨"))
+        self.label_third_jinzhi.setText(_translate("Form", "08第三近节指骨"))
+        self.label_third_yuanzhi.setText(_translate("Form", "10第三远节指骨"))
+        # self.label5.setText(_translate("Form", "TextLabel"))
+        # self.label10.setText(_translate("Form", "TextLabel"))
+        self.label_third_zhang.setText(_translate("Form", "04第三掌骨"))
+        # self.label2.setText(_translate("Form", "TextLabel"))
         self.label_epiphysis.setText(_translate("Form", "骨骺"))
         self.right_img.setText(_translate("Form", "右边图片"))
         self.det_img_button.setText(_translate("Form", "开始检测"))
         self.left_img.setText(_translate("Form", "左边图片"))
-        self.left_img.setPixmap(QPixmap("images/UI/up.jpeg"))
-        self.right_img.setPixmap(QPixmap("images/UI/right.jpeg"))
+        self.left_img.setPixmap(QPixmap("images/UI/img1.jpg"))
+        self.right_img.setPixmap(QPixmap("images/UI/img2.jpg"))
         self.up_img_button.setText(_translate("Form", "上传图片"))
         self.up_img_button.setFont(font_main)
         self.det_img_button.setFont(font_main)
@@ -354,7 +355,29 @@ class MainWindow(QTabWidget):
                                           "QPushButton{border-radius:5px}"
                                                  )
 
+        # 遗传身高
+        self.button_predict_height.clicked.connect(self.calcGeneHeight)
+
+        # 预测骨龄
+        self.button_bone_age_predict.clicked.connect(self.calc_boneAge)
+
         self.initUI()
+
+        self.LabelIndexName = {
+            '01': '01',  # 尺骨
+            '02': '02',  # 桡骨
+            '61': '03',  # 第一掌骨
+            '62': '04',  # 第三掌骨
+            '63': '05',  # 第五掌骨
+            '11': '06',  # 第一近指骨
+            '12': '07',  # 第一远指骨
+            '31': '08',  # 第三近指骨
+            '32': '09',  # 第三中指骨
+            '33': '10',  # 第三远指骨
+            '51': '11',  # 第五近指骨
+            '52': '12',  # 第五中指骨
+            '53': '13'  # 第五远指骨
+            }
 
     '''
     ***模型初始化***
@@ -396,7 +419,142 @@ class MainWindow(QTabWidget):
         img_detection_widget.setLayout(img_detection_layout)
 
         self.addTab(img_detection_widget, '图片检测')
-        self.setTabIcon(0, QIcon('images/UI/lufei.png'))
+        self.setTabIcon(0, QIcon('images/UI/tubiao.jpg'))
+
+    #遗传身高计算
+    def calcGeneHeight(self):
+
+        faHeight = float(self.text_father_height.text())
+        maHeight = float(self.text_mother_height.text())
+        sex = self.comboBox_gender.currentText()
+
+        if sex == '男':
+            result = (faHeight + maHeight + 13) / 2
+        else:
+            result = (faHeight + maHeight - 13) / 2
+
+        self.text_predict_height.setText(str(result))
+
+
+    #计算骨龄发育总分，调用骨龄计算函数，返回具体骨龄值
+    def calc_boneAge(self):
+
+        # 骨发育分评分表
+        gjScore = {'女': {
+            '01': [0, 30, 33, 37, 45, 74, 118, 173],
+            '02': [0, 23, 30, 44, 56, 78, 114, 160, 218],
+            '61': [0, 8, 12, 18, 24, 31, 43, 53, 67],
+            '62': [0, 5, 8, 12, 16, 23, 37, 47, 53],
+            '63': [0, 6, 9, 12, 17, 23, 35, 48, 52],
+            '11': [0, 9, 11, 14, 20, 31, 44, 56, 67],
+            '12': [0, 7, 9, 15, 22, 33, 48, 51, 68],
+            '31': [0, 5, 7, 12, 19, 27, 37, 44, 54],
+            '32': [0, 6, 8, 12, 18, 27, 36, 45, 52],
+            '33': [0, 7, 8, 11, 15, 22, 33, 37, 49],
+            '51': [0, 6, 7, 12, 18, 26, 35, 42, 51],
+            '52': [0, 7, 8, 12, 18, 28, 35, 43, 49],
+            '53': [0, 7, 8, 11, 15, 22, 32, 36, 47]
+        },
+            '男': {
+                '01': [0, 27, 30, 32, 40, 58, 107, 181],  # 尺骨
+                '02': [0, 16, 21, 30, 39, 59, 87, 138, 213],  # 桡骨
+                '61': [0, 6, 9, 14, 21, 26, 36, 49, 67],  # 第一掌骨
+                '62': [0, 4, 5, 9, 12, 19, 31, 43, 52],  # 第三掌骨
+                '63': [0, 4, 6, 9, 14, 18, 29, 43, 52],  # 第五掌骨
+                '11': [0, 7, 8, 11, 17, 26, 38, 52, 67],  # 第一近指骨
+                '12': [0, 5, 6, 11, 17, 26, 38, 46, 66],  # 第一远指骨
+                '31': [0, 4, 4, 9, 15, 23, 31, 40, 53],  # 第三近指骨
+                '32': [0, 4, 6, 9, 15, 22, 32, 43, 52],  # 第三中指骨
+                '33': [0, 4, 6, 8, 13, 18, 28, 34, 49],  # 第三远指骨
+                '51': [0, 4, 5, 9, 15, 21, 30, 39, 51],  # 第五近指骨
+                '52': [0, 6, 7, 9, 15, 23, 32, 42, 49],  # 第五中指骨
+                '53': [0, 5, 6, 9, 13, 18, 27, 34, 48]  # 第五远指骨
+            }
+        }
+
+        sex = self.comboBox_gender.currentText()
+        #获取每个骨关节的骨发育等级
+        cg = ord(self.cbBox_ulna.currentText()) - 65
+        rg = ord(self.cbBox_radius.currentText()) - 65
+        dyz = ord(self.cbBox_first_zhang.currentText()) - 65
+        dszh = ord(self.cbBox_third_zhang.currentText()) - 65
+        dwzh = ord(self.cbBox_fifth_zhang.currentText()) - 65
+        dyj = ord(self.cbBox_first_jinzhi.currentText()) - 65
+        dsj = ord(self.cbBox_third_jinzhi.currentText()) - 65
+        dwj = ord(self.cbBox_fifth_jinzhi.currentText()) - 65
+        dsz = ord(self.cbBox_third_zhongzhi.currentText()) - 65
+        dwz = ord(self.cbBox_fifth_zhongzhi.currentText()) - 65
+        dyy = ord(self.cbBox_first_yaunzhi.currentText()) - 65
+        dsy = ord(self.cbBox_third_yaunzhi.currentText()) - 65
+        dwy = ord(self.cbBox_fifth_yaunzhi.currentText()) - 65
+
+        # 将骨发育等级转成数值
+        value = [cg, rg, dyz, dszh, dwzh, dyj, dsj, dwj, dsz, dwz, dyy, dsy, dwy]
+        finally_results = {'01': value[0], '02': value[1], '61': value[2], '62': value[3],
+                           '63': value[4], '11': value[5], '31': value[6], '51': value[7],
+                           '32': value[8], '52': value[9], '12': value[10], '33': value[11],
+                           '53': value[12]}
+        score = 0
+        for key, value in finally_results.items():
+            # 根据每个关节的等级，计算骨发育得分
+            score += gjScore[sex][key][value]
+
+
+        # 计算骨龄
+        list1 = ['1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.5', '5.0', '5.5', '6.0', '6.5',
+                 '7.0', '7.5', '8.0', '8.5', '9,0', '9.5', '10.0', '10.5', '11.0', '11.5', '12.0', '12.5',
+                 '13.0', '13.5', '14.0', '14.5', '15.0', '15.5', '16.0', '16.5', '17.0', '17.5', '18.0']
+        # 男生
+        list2 = ['74', '80', '85', '91', '98', '105', '112', '121', '130', '139', '150', '161', '173',
+                 '186', '201', '216', '232', '250', '270', '291', '313', '338', '369', '431', '492',
+                 '550', '605', '659', '710', '760', '807', '853', '897', '940', '980']
+        list3 = ['139', '146', '152', '160', '168', '177', '188', '199', '211', '225', '240', '257',
+                 '275', '296', '318', '343', '370', '401', '434', '483', '560', '627', '686', '738', '784',
+                 '824', '859', '890', '917', '940', '961', '979', '995']
+
+        if sex == '男':
+            if score <= 980:
+                res = 0
+                for i, item in enumerate(list2):
+                    int(item)
+                    if int(item) >= score:
+                        res = i
+                        break
+                # print(list2[res])
+                x = score - int(list2[res - 1])
+                y = (int(list2[res]) - int(list2[res - 1]))//6
+                z = x // y
+                year = ((res-1)//2) + 1
+                if (res-1) % 2 == 1:
+                    month = 6 + z
+                else:
+                    month = z
+                value = "{0}岁{1}个月".format(year, month)
+                self.text_bone_age_predict.setText(value)
+            else:
+                self.text_bone_age_predict.setText("18岁")
+        else:
+            if score <= 995:
+                res = 0
+                for i, item in enumerate(list3):
+                    int(item)
+                    if int(item) >= score:
+                        res = i
+                        break
+                # print(list3[res])
+                x = score - int(list3[res - 1])
+                y = (int(list3[res]) - int(list3[res - 1]))//6
+                z = x // y
+                year = ((res-1)//2) + 1
+                if (res-1) % 2 == 1:
+                    month = 6 + z
+                else:
+                    month = z
+                value = "{0}岁{1}个月".format(year, month)
+                self.text_bone_age_predict.setText(value)
+            else:
+                self.text_bone_age_predict.setText("18岁")
+
 
 
     '''
@@ -418,7 +576,61 @@ class MainWindow(QTabWidget):
             self.img2predict = fileName
             self.left_img.setPixmap(QPixmap("images/tmp/upload_show_result.jpg"))
             # todo 上传图片之后右侧的图片重置，
-            self.right_img.setPixmap(QPixmap("images/UI/right.jpeg"))
+            self.right_img.setPixmap(QPixmap("images/UI/img2.jpg"))
+            self.cbBox_ulna.setCurrentText('A')
+            self.cbBox_radius.setCurrentText('A')
+            self.cbBox_first_zhang.setCurrentText("A")
+            self.cbBox_third_zhang.setCurrentText("A")
+            self.cbBox_fifth_zhang.setCurrentText("A")
+            self.cbBox_first_jinzhi.setCurrentText("A")
+            self.cbBox_first_yaunzhi.setCurrentText("A")
+            self.cbBox_third_jinzhi.setCurrentText("A")
+            self.cbBox_third_zhongzhi.setCurrentText("A")
+            self.cbBox_third_yaunzhi.setCurrentText("A")
+            self.cbBox_fifth_jinzhi.setCurrentText("A")
+            self.cbBox_fifth_zhongzhi.setCurrentText("A")
+            self.cbBox_fifth_yaunzhi.setCurrentText("A")
+            self.text_bone_age_predict.setText("")
+
+
+
+    def showCombBoxResult(self, source):
+        for key, value in source.items() :
+            if key == '01' :
+                self.cbBox_ulna.setCurrentText(value)
+            elif key == '02' :
+                self.cbBox_radius.setCurrentText(value)
+            elif key == '03':
+                self.cbBox_first_zhang.setCurrentText(value)
+            elif key == '04' :
+                self.cbBox_third_zhang.setCurrentText(value)
+            elif key == '05' :
+                self.cbBox_fifth_zhang.setCurrentText(value)
+            elif key == '06' :
+                self.cbBox_first_jinzhi.setCurrentText(value)
+            elif key == '07' :
+                self.cbBox_first_yaunzhi.setCurrentText(value)
+            elif key == '08' :
+                self.cbBox_third_jinzhi.setCurrentText(value)
+            elif key == '09' :
+                self.cbBox_third_zhongzhi.setCurrentText(value)
+            elif key == '10' :
+                self.cbBox_third_yaunzhi.setCurrentText(value)
+            elif key == '11' :
+                self.cbBox_fifth_jinzhi.setCurrentText(value)
+            elif key == '12' :
+                self.cbBox_fifth_zhongzhi.setCurrentText(value)
+            else :
+                self.cbBox_fifth_yaunzhi.setCurrentText(value)
+
+
+    '''
+    ***获取排序标签***
+    '''
+    def getIndexAndName(self, source):
+        if source in self.LabelIndexName.keys():
+            return self.LabelIndexName.get(source)
+
 
     '''
     ***检测图片***
@@ -507,11 +719,13 @@ class MainWindow(QTabWidget):
                         det[:, :4] = scale_coords(im.shape[2:], det[:, :4], im0.shape).round()
 
                         # Print results
+
                         for c in det[:, -1].unique():
                             n = (det[:, -1] == c).sum()  # detections per class
                             s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
 
                         # Write results
+                        results = {} # 图片检测结果
                         for *xyxy, conf, cls in reversed(det):
                             if save_txt:  # Write to file
                                 xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(
@@ -523,10 +737,20 @@ class MainWindow(QTabWidget):
                             if save_img or save_crop or view_img:  # Add bbox to image
                                 c = int(cls)  # integer class
                                 label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
+                                label = label.split(' ')[0]
+                                index = self.getIndexAndName(label[:2])
+                                value = label[2:]
+                                label = index + value
+                                results[index] = value
                                 annotator.box_label(xyxy, label, color=colors(c, True))
                                 # if save_crop:
                                 #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg',
                                 #                  BGR=True)
+
+                        #文本显示检测结果
+                        # print(results)
+                        self.showCombBoxResult(results)
+
                     # Print time (inference-only)
                     LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)')
                     # Stream results
